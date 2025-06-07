@@ -1,9 +1,12 @@
+import path from "../node_modules/path";
+import express from '../node_modules/express';
+
 const { invoke } = window.__TAURI__.core;
 
 // Spotify API Configuration
 const SPOTIFY_CONFIG = {
-  clientId: 'YOUR_SPOTIFY_CLIENT_ID', // Ersetzen Sie dies mit Ihrer Client ID
-  redirectUri: 'http://localhost:1420/callback', // Tauri dev server läuft auf 1420
+  clientId: '3fd7631171484ca1b2c76faeeccab147', // Ersetzen Sie dies mit Ihrer Client ID
+  redirectUri: 'http://127.0.0.1:9843/callback', // Tauri dev server läuft auf 1420
   scopes: [
     'user-read-recently-played',
     'user-read-playback-state',
@@ -15,6 +18,10 @@ let accessToken = null;
 let allTracks = [];
 let filteredTracks = [];
 let currentFilter = 'all';
+
+document.getElementById('loginBtn').addEventListener('click', () => {
+  loginWithSpotify();
+});
 
 // Check if we're returning from Spotify auth
 window.addEventListener('DOMContentLoaded', () => {
@@ -34,20 +41,84 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-async function loginWithSpotify() {
-  const authUrl = `https://accounts.spotify.com/authorize?` +
-      `response_type=code&` +
-      `client_id=${SPOTIFY_CONFIG.clientId}&` +
-      `scope=${SPOTIFY_CONFIG.scopes.join('%20')}&` +
-      `redirect_uri=${encodeURIComponent(SPOTIFY_CONFIG.redirectUri)}`;
+function generateRandomState(length = 16) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  return Array.from(crypto.getRandomValues(new Uint8Array(length)))
+      .map(x => chars.charAt(x % chars.length))
+      .join('');
+}
 
-  // Use Tauri's opener plugin to open URL in system browser
+async function sendStateToServer(state) {
   try {
-    await invoke('open_spotify_url', { url: authUrl });
+    const response = await fetch('https://api.nobrainclient.gg/session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ state })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server antwortet mit Status ${response.status}`);
+    }
   } catch (error) {
-    console.error('Failed to open URL:', error);
-    // Fallback: show URL to user
-    showError('Bitte öffnen Sie diese URL in Ihrem Browser: ' + authUrl);
+    console.error('Fehler beim Senden des States:', error);
+    throw error;
+  }
+}
+
+async function startAuthServer(port = 9843) {
+
+  const app = express();
+
+  // Middleware setup
+  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.json());
+
+  // Routes setup
+  app.get('/health', (req, res) => {
+    res.json({
+      status: 'healthy',
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'callback.html'));
+  });
+
+  // Server starten
+  return new Promise((resolve) => {
+    const server = app.listen(port, () => {
+      console.log(`🌍 HTTP Server läuft auf Port ${port}`);
+      console.log(`📱 Callback URL: http://localhost:${port}/callback.html`);
+      console.log(`🔗 Oder einfach: http://localhost:${port}`);
+      resolve(server);
+    });
+  });
+}
+
+async function loginWithSpotify() {
+  const state = generateRandomState();
+
+  // Start the auth server
+  startAuthServer();
+
+  try {
+
+
+    const authUrl = `https://accounts.spotify.com/authorize?` +
+        `response_type=code&` +
+        `client_id=${SPOTIFY_CONFIG.clientId}&` +
+        `scope=${SPOTIFY_CONFIG.scopes.join('%20')}&` +
+        `redirect_uri=${encodeURIComponent(SPOTIFY_CONFIG.redirectUri)}` +
+        `&state=${state}`;
+
+    await invoke('open_spotify_url', { url: authUrl });
+    await sendStateToServer(state);
+  } catch (error) {
+    console.error('Fehler beim Login-Prozess:', error);
+    showError('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
   }
 }
 
@@ -65,7 +136,7 @@ async function exchangeCodeForToken(code) {
         code: code,
         redirect_uri: SPOTIFY_CONFIG.redirectUri,
         client_id: SPOTIFY_CONFIG.clientId,
-        client_secret: 'YOUR_SPOTIFY_CLIENT_SECRET' // In production: Server-side!
+        client_secret: '50ece9d4a0d04fe2bc934fbd11985a6c' // In production: Server-side!
       })
     });
 

@@ -12,9 +12,9 @@ struct SpotifyConfig {
 #[tauri::command]
 fn get_spotify_config() -> SpotifyConfig {
     SpotifyConfig {
-        client_id: "YOUR_SPOTIFY_CLIENT_ID".to_string(),
-        client_secret: "YOUR_SPOTIFY_CLIENT_SECRET".to_string(),
-        redirect_uri: "http://localhost:1420/callback".to_string(),
+        client_id: "3fd7631171484ca1b2c76faeeccab147".to_string(),
+        client_secret: "50ece9d4a0d04fe2bc934fbd11985a6c".to_string(),
+        redirect_uri: "http://127.0.0.1:9843/callback".to_string(),
     }
 }
 

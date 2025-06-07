@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify App - Erfolgreich verbunden</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1db954 0%, #1ed760 50%, #1aa34a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            overflow: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .music-note {
+            position: absolute;
+            color: white;
+            font-size: 2rem;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .music-note:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .music-note:nth-child(2) { top: 20%; right: 20%; animation-delay: 1s; }
+        .music-note:nth-child(3) { bottom: 30%; left: 15%; animation-delay: 2s; }
+        .music-note:nth-child(4) { bottom: 10%; right: 10%; animation-delay: 3s; }
+        .music-note:nth-child(5) { top: 50%; left: 5%; animation-delay: 4s; }
+        .music-note:nth-child(6) { top: 70%; right: 5%; animation-delay: 5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+            border: 1px solid rgba(29, 185, 84, 0.3);
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .spotify-logo {
+            width: 80px;
+            height: 80px;
+            background: #1db954;
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .success-icon {
+            background: #1db954;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            animation: checkmark 0.6s ease-in-out 0.5s both;
+        }
+
+        @keyframes checkmark {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .checkmark {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: #1db954;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #b3b3b3;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .status {
+            background: rgba(29, 185, 84, 0.1);
+            border: 1px solid #1db954;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.5rem 0;
+        }
+
+        .status-label {
+            color: #b3b3b3;
+        }
+
+        .status-value {
+            color: #1db954;
+            font-weight: 600;
+        }
+
+        .actions {
+            margin-top: 2rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #1db954, #1ed760);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(29, 185, 84, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #1db954;
+            color: #1db954;
+        }
+
+        .btn-secondary:hover {
+            background: #1db954;
+            color: white;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .loading {
+            display: none;
+            margin: 1rem 0;
+        }
+
+        .spinner {
+            border: 3px solid rgba(29, 185, 84, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #1db954;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="music-note">♪</div>
+        <div class="music-note">♫</div>
+        <div class="music-note">♪</div>
+        <div class="music-note">♫</div>
+        <div class="music-note">♪</div>
+        <div class="music-note">♫</div>
+    </div>
+
+    <div class="container">
+        <div class="success-icon">
+            <div class="checkmark">✓</div>
+        </div>
+        
+        <h1>Erfolgreich verbunden!</h1>
+        <p class="subtitle">
+            Deine Spotify-App wurde erfolgreich autorisiert.<br>
+            Du kannst jetzt alle Funktionen nutzen.
+        </p>
+
+        <div class="status">
+            <div class="status-item">
+                <span class="status-label">Status:</span>
+                <span class="status-value" id="auth-status">Autorisiert</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Zeitstempel:</span>
+                <span class="status-value" id="timestamp"></span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Sitzung:</span>
+                <span class="status-value" id="session-id"></span>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Wird weitergeleitet...</p>
+        </div>
+
+        <div class="actions" id="actions">
+            <button class="btn" onclick="redirectToApp()">
+                Zurück zur App
+            </button>
+            <button class="btn btn-secondary" onclick="closeWindow()">
+                Tab schließen
+            </button>
+        </div>
+
+        <div class="footer">
+            <p>Dieser Tab kann jetzt geschlossen werden.</p>
+        </div>
+    </div>
+
+    <script>
+        // URL-Parameter analysieren
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const hash = new URLSearchParams(window.location.hash.substring(1));
+            
+            return {
+                code: params.get('code') || hash.get('access_token'),
+                state: params.get('state'),
+                error: params.get('error'),
+                error_description: params.get('error_description')
+            };
+        }
+
+        // Zeitstempel formatieren
+        function formatTimestamp() {
+            const now = new Date();
+            return now.toLocaleString('de-DE', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Session ID generieren
+        function generateSessionId() {
+            return Math.random().toString(36).substr(2, 9).toUpperCase();
+        }
+
+        // Zur Tauri App zurückkehren
+        function redirectToApp() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('actions').style.display = 'none';
+            
+            // Für Tauri: Versuche das Fenster zu schließen
+            setTimeout(() => {
+                window.close();
+                
+                // Fallback falls schließen nicht funktioniert
+                document.getElementById('loading').style.display = 'none';
+                document.body.innerHTML = `
+                    <div class="container">
+                        <div class="success-icon">
+                            <div class="checkmark">✓</div>
+                        </div>
+                        <h1>Erfolgreich!</h1>
+                        <p class="subtitle">Du kannst diesen Tab jetzt schließen und zu deiner App zurückkehren.</p>
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        // Fenster schließen
+        function closeWindow() {
+            window.close();
+        }
+
+        // Callback-Daten für Tauri verfügbar machen
+        function exposeDataForTauri(data) {
+            // Daten im localStorage speichern für Tauri App (falls verfügbar)
+            try {
+                if (data.code) {
+                    localStorage.setItem('spotify_auth_code', data.code);
+                }
+                if (data.state) {
+                    localStorage.setItem('spotify_auth_state', data.state);
+                }
+            } catch (e) {
+                console.log('LocalStorage nicht verfügbar:', e);
+            }
+            
+            // Custom Event für Tauri
+            window.dispatchEvent(new CustomEvent('spotify-callback', {
+                detail: data
+            }));
+            
+            // Daten auch als globale Variable verfügbar machen
+            window.spotifyCallbackData = data;
+            
+            console.log('Spotify Callback Daten:', data);
+        }
+
+        // Initialisierung
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = getUrlParams();
+            
+            // Zeitstempel setzen
+            document.getElementById('timestamp').textContent = formatTimestamp();
+            
+            // Session ID setzen
+            document.getElementById('session-id').textContent = generateSessionId();
+            
+            // Fehlerbehandlung
+            if (params.error) {
+                document.querySelector('h1').textContent = 'Autorisierung fehlgeschlagen';
+                document.querySelector('.subtitle').innerHTML = `
+                    Ein Fehler ist aufgetreten: ${params.error_description || params.error}<br>
+                    Du kannst diesen Tab schließen und es erneut versuchen.
+                `;
+                document.querySelector('.success-icon').innerHTML = '<div class="checkmark">✗</div>';
+                document.querySelector('.success-icon').style.background = '#e22134';
+                document.getElementById('auth-status').textContent = 'Fehler';
+                document.getElementById('auth-status').style.color = '#e22134';
+                
+                // Für Tauri: Fehler auch verfügbar machen
+                exposeDataForTauri({ error: params.error, error_description: params.error_description });
+                return;
+            }
+            
+            // Erfolgreich - Daten für Tauri App verfügbar machen
+            if (params.code) {
+                exposeDataForTauri(params);
+                
+                // Automatisch nach 3 Sekunden schließen (für bessere UX)
+                setTimeout(() => {
+                    document.querySelector('.subtitle').innerHTML = `
+                        Autorisierung erfolgreich!<br>
+                        Dieses Fenster schließt sich automatisch...
+                    `;
+                    
+                    setTimeout(() => {
+                        window.close();
+                    }, 2000);
+                }, 1000);
+            } else {
+                // Kein Code erhalten
+                document.querySelector('h1').textContent = 'Unvollständige Autorisierung';
+                document.querySelector('.subtitle').innerHTML = `
+                    Kein Autorisierungscode erhalten.<br>
+                    Du kannst diesen Tab schließen und es erneut versuchen.
+                `;
+                document.getElementById('auth-status').textContent = 'Unvollständig';
+                document.getElementById('auth-status').style.color = '#ffa500';
+            }
+        });
+
+        // Message-Listener für Cross-Window-Kommunikation
+        window.addEventListener('message', function(event) {
+            // Hier könntest du auf Nachrichten von der Parent-App reagieren
+            console.log('Nachricht erhalten:', event.data);
+        });
+    </script>
+</body>
+</html>

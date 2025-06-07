@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <link rel="stylesheet" href="styles.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; script-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
   <title>Spotify History Viewer</title>
-  <script type="module" src="/main.js" defer></script>
+  <script type="module" src="main.js" defer></script>
 </head>
 <body>
 <div class="container">
@@ -15,7 +16,7 @@
   </div>
 
   <div class="auth-section" id="authSection">
-    <button class="spotify-btn" id="loginBtn" onclick="loginWithSpotify()">
+    <button class="spotify-btn" id="loginBtn">
       Mit Spotify anmelden
     </button>
   </div>
