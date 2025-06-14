@@ -3,439 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotify App - Erfolgreich verbunden</title>
+    <title>Spotify Authentifizierung</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1db954 0%, #1ed760 50%, #1aa34a 100%);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #191414 25%, #2f3136 75%, #36393f 100%);
             min-height: 100vh;
+            color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            overflow: hidden;
-        }
-
-        .background-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.1;
-            z-index: 0;
-        }
-
-        .music-note {
-            position: absolute;
-            color: white;
-            font-size: 2rem;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .music-note:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
-        .music-note:nth-child(2) { top: 20%; right: 20%; animation-delay: 1s; }
-        .music-note:nth-child(3) { bottom: 30%; left: 15%; animation-delay: 2s; }
-        .music-note:nth-child(4) { bottom: 10%; right: 10%; animation-delay: 3s; }
-        .music-note:nth-child(5) { top: 50%; left: 5%; animation-delay: 4s; }
-        .music-note:nth-child(6) { top: 70%; right: 5%; animation-delay: 5s; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
+            margin: 0;
+            padding: 20px;
         }
 
         .container {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            background: linear-gradient(145deg,
+            rgba(29, 185, 84, 0.1) 0%,
+            rgba(88, 101, 242, 0.1) 50%,
+            rgba(0, 0, 0, 0.3) 100%);
             border-radius: 20px;
-            padding: 3rem 2.5rem;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            padding: 40px;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             max-width: 500px;
-            width: 90%;
-            position: relative;
-            z-index: 10;
-            border: 1px solid rgba(29, 185, 84, 0.3);
-            animation: slideIn 0.8s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .spotify-logo {
-            width: 80px;
-            height: 80px;
-            background: #1db954;
-            border-radius: 50%;
-            margin: 0 auto 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            font-weight: bold;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .success-icon {
-            background: #1db954;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            animation: checkmark 0.6s ease-in-out 0.5s both;
-        }
-
-        @keyframes checkmark {
-            0% { transform: scale(0); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        .checkmark {
-            color: white;
-            font-size: 1.8rem;
-            font-weight: bold;
+            width: 100%;
         }
 
         h1 {
-            font-size: 2.2rem;
-            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #1DB954 0%, #1ed760 25%, #5865F2 75%, #7289da 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .success {
+            color: #1DB954;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
             font-weight: 600;
-            color: #1db954;
         }
 
-        .subtitle {
-            font-size: 1.1rem;
-            color: #b3b3b3;
-            margin-bottom: 2rem;
-            line-height: 1.5;
+        .error {
+            color: #ff6b6b;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            font-weight: 600;
         }
 
-        .status {
+        .code-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            color: #1DB954;
+            word-break: break-all;
             background: rgba(29, 185, 84, 0.1);
-            border: 1px solid #1db954;
-            border-radius: 10px;
-            padding: 1rem;
-            margin: 1.5rem 0;
-            font-size: 0.95rem;
-        }
-
-        .status-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 0.5rem 0;
-        }
-
-        .status-label {
-            color: #b3b3b3;
-        }
-
-        .status-value {
-            color: #1db954;
-            font-weight: 600;
-        }
-
-        .actions {
-            margin-top: 2rem;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
         }
 
         .btn {
-            background: linear-gradient(135deg, #1db954, #1ed760);
+            background: linear-gradient(135deg, #1DB954 0%, #1ed760 100%);
             color: white;
             border: none;
-            padding: 0.8rem 2rem;
+            padding: 15px 30px;
             border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
+            font-size: 1.1rem;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin: 0.5rem;
+            margin: 10px;
             text-decoration: none;
             display: inline-block;
         }
 
         .btn:hover {
+            background: linear-gradient(135deg, #1ed760 0%, #21e065 100%);
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(29, 185, 84, 0.3);
+            box-shadow: 0 5px 15px rgba(29, 185, 84, 0.4);
         }
 
         .btn-secondary {
-            background: transparent;
-            border: 2px solid #1db954;
-            color: #1db954;
+            background: linear-gradient(135deg, #5865F2 0%, #7289da 100%);
         }
 
         .btn-secondary:hover {
-            background: #1db954;
-            color: white;
+            background: linear-gradient(135deg, #7289da 0%, #8ea1e1 100%);
+            box-shadow: 0 5px 15px rgba(88, 101, 242, 0.4);
         }
 
-        .footer {
-            margin-top: 2rem;
-            font-size: 0.85rem;
-            color: #666;
-        }
-
-        .loading {
-            display: none;
-            margin: 1rem 0;
+        .instructions {
+            color: #b3b3b3;
+            margin: 20px 0;
+            line-height: 1.6;
         }
 
         .spinner {
+            width: 20px;
+            height: 20px;
             border: 3px solid rgba(29, 185, 84, 0.3);
+            border-top: 3px solid #1DB954;
             border-radius: 50%;
-            border-top: 3px solid #1db954;
-            width: 30px;
-            height: 30px;
             animation: spin 1s linear infinite;
-            margin: 0 auto;
+            display: inline-block;
+            margin-right: 10px;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 2rem 1.5rem;
-                margin: 1rem;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .btn {
-                padding: 0.7rem 1.5rem;
-                font-size: 0.9rem;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="background-animation">
-        <div class="music-note">♪</div>
-        <div class="music-note">♫</div>
-        <div class="music-note">♪</div>
-        <div class="music-note">♫</div>
-        <div class="music-note">♪</div>
-        <div class="music-note">♫</div>
+<div class="container">
+    <h1>🎵 Spotify Callback</h1>
+
+    <div id="content">
+        <div class="spinner"></div>
+        Verarbeite Authentifizierung...
     </div>
+</div>
 
-    <div class="container">
-        <div class="success-icon">
-            <div class="checkmark">✓</div>
-        </div>
-        
-        <h1>Erfolgreich verbunden!</h1>
-        <p class="subtitle">
-            Deine Spotify-App wurde erfolgreich autorisiert.<br>
-            Du kannst jetzt alle Funktionen nutzen.
-        </p>
+<script>
+    // Extract code and state from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const state = urlParams.get('state');
+    const error = urlParams.get('error');
+    const contentDiv = document.getElementById('content');
 
-        <div class="status">
-            <div class="status-item">
-                <span class="status-label">Status:</span>
-                <span class="status-value" id="auth-status">Autorisiert</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">Zeitstempel:</span>
-                <span class="status-value" id="timestamp"></span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">Sitzung:</span>
-                <span class="status-value" id="session-id"></span>
-            </div>
-        </div>
+    if (error) {
+        contentDiv.innerHTML = `
+                <div class="error">❌ Authentifizierung fehlgeschlagen</div>
+                <p class="instructions">Fehler: ${error}</p>
+                <p class="instructions">Bitte versuchen Sie es erneut in Ihrer Desktop-App.</p>
+                <button class="btn btn-secondary" onclick="window.close()">Fenster schließen</button>
+            `;
+    } else if (code) {
+        // Attempt to send code and state back to local app
+        const localCallbackUrl = `http://localhost:1420/callback?code=${code}${state ? `&state=${state}` : ''}`;
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Wird weitergeleitet...</p>
-        </div>
+        contentDiv.innerHTML = `
+                <div class="success">✅ Authentifizierung erfolgreich!</div>
+                <p class="instructions">
+                    Ihr Authentifizierungscode wurde generiert.
+                    Die Desktop-App sollte automatisch fortfahren.
+                </p>
+                <div class="code-container">
+                    <strong>Fallback - Code manuell kopieren:</strong>
+                    <div class="code" id="authCode">${code}</div>
+                    ${state ? `<div class="code" id="authState">State: ${state}</div>` : ''}
+                    <button class="btn" onclick="copyCode()">Code kopieren</button>
+                </div>
+                <button class="btn btn-secondary" onclick="tryAutoRedirect()">Zur App weiterleiten</button>
+                <button class="btn btn-secondary" onclick="window.close()">Fenster schließen</button>
+            `;
 
-        <div class="actions" id="actions">
-            <button class="btn" onclick="redirectToApp()">
-                Zurück zur App
-            </button>
-            <button class="btn btn-secondary" onclick="closeWindow()">
-                Tab schließen
-            </button>
-        </div>
+        // Try to automatically redirect to local app - THIS WON'T WORK FOR EXTERNAL SERVER!
+        // User will need to manually copy the code or use the manual input feature
+        console.log('Auth Code:', code);
+        if (state) console.log('Auth State:', state);
+    } else {
+        contentDiv.innerHTML = `
+                <div class="error">❌ Kein Authentifizierungscode erhalten</div>
+                <p class="instructions">Bitte versuchen Sie es erneut in Ihrer Desktop-App.</p>
+                <button class="btn btn-secondary" onclick="window.close()">Fenster schließen</button>
+            `;
+    }
 
-        <div class="footer">
-            <p>Dieser Tab kann jetzt geschlossen werden.</p>
-        </div>
-    </div>
-
-    <script>
-        // URL-Parameter analysieren
-        function getUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            const hash = new URLSearchParams(window.location.hash.substring(1));
-            
-            return {
-                code: params.get('code') || hash.get('access_token'),
-                state: params.get('state'),
-                error: params.get('error'),
-                error_description: params.get('error_description')
-            };
-        }
-
-        // Zeitstempel formatieren
-        function formatTimestamp() {
-            const now = new Date();
-            return now.toLocaleString('de-DE', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        // Session ID generieren
-        function generateSessionId() {
-            return Math.random().toString(36).substr(2, 9).toUpperCase();
-        }
-
-        // Zur Tauri App zurückkehren
-        function redirectToApp() {
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('actions').style.display = 'none';
-            
-            // Für Tauri: Versuche das Fenster zu schließen
+    function copyCode() {
+        const codeElement = document.getElementById('authCode');
+        navigator.clipboard.writeText(codeElement.textContent).then(() => {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Kopiert!';
+            btn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
             setTimeout(() => {
-                window.close();
-                
-                // Fallback falls schließen nicht funktioniert
-                document.getElementById('loading').style.display = 'none';
-                document.body.innerHTML = `
-                    <div class="container">
-                        <div class="success-icon">
-                            <div class="checkmark">✓</div>
-                        </div>
-                        <h1>Erfolgreich!</h1>
-                        <p class="subtitle">Du kannst diesen Tab jetzt schließen und zu deiner App zurückkehren.</p>
-                    </div>
-                `;
-            }, 1000);
-        }
-
-        // Fenster schließen
-        function closeWindow() {
-            window.close();
-        }
-
-        // Callback-Daten für Tauri verfügbar machen
-        function exposeDataForTauri(data) {
-            // Daten im localStorage speichern für Tauri App (falls verfügbar)
-            try {
-                if (data.code) {
-                    localStorage.setItem('spotify_auth_code', data.code);
-                }
-                if (data.state) {
-                    localStorage.setItem('spotify_auth_state', data.state);
-                }
-            } catch (e) {
-                console.log('LocalStorage nicht verfügbar:', e);
-            }
-            
-            // Custom Event für Tauri
-            window.dispatchEvent(new CustomEvent('spotify-callback', {
-                detail: data
-            }));
-            
-            // Daten auch als globale Variable verfügbar machen
-            window.spotifyCallbackData = data;
-            
-            console.log('Spotify Callback Daten:', data);
-        }
-
-        // Initialisierung
-        document.addEventListener('DOMContentLoaded', function() {
-            const params = getUrlParams();
-            
-            // Zeitstempel setzen
-            document.getElementById('timestamp').textContent = formatTimestamp();
-            
-            // Session ID setzen
-            document.getElementById('session-id').textContent = generateSessionId();
-            
-            // Fehlerbehandlung
-            if (params.error) {
-                document.querySelector('h1').textContent = 'Autorisierung fehlgeschlagen';
-                document.querySelector('.subtitle').innerHTML = `
-                    Ein Fehler ist aufgetreten: ${params.error_description || params.error}<br>
-                    Du kannst diesen Tab schließen und es erneut versuchen.
-                `;
-                document.querySelector('.success-icon').innerHTML = '<div class="checkmark">✗</div>';
-                document.querySelector('.success-icon').style.background = '#e22134';
-                document.getElementById('auth-status').textContent = 'Fehler';
-                document.getElementById('auth-status').style.color = '#e22134';
-                
-                // Für Tauri: Fehler auch verfügbar machen
-                exposeDataForTauri({ error: params.error, error_description: params.error_description });
-                return;
-            }
-            
-            // Erfolgreich - Daten für Tauri App verfügbar machen
-            if (params.code) {
-                exposeDataForTauri(params);
-                
-                // Automatisch nach 3 Sekunden schließen (für bessere UX)
-                setTimeout(() => {
-                    document.querySelector('.subtitle').innerHTML = `
-                        Autorisierung erfolgreich!<br>
-                        Dieses Fenster schließt sich automatisch...
-                    `;
-                    
-                    setTimeout(() => {
-                        window.close();
-                    }, 2000);
-                }, 1000);
-            } else {
-                // Kein Code erhalten
-                document.querySelector('h1').textContent = 'Unvollständige Autorisierung';
-                document.querySelector('.subtitle').innerHTML = `
-                    Kein Autorisierungscode erhalten.<br>
-                    Du kannst diesen Tab schließen und es erneut versuchen.
-                `;
-                document.getElementById('auth-status').textContent = 'Unvollständig';
-                document.getElementById('auth-status').style.color = '#ffa500';
-            }
+                btn.textContent = originalText;
+                btn.style.background = '';
+            }, 2000);
         });
+    }
 
-        // Message-Listener für Cross-Window-Kommunikation
-        window.addEventListener('message', function(event) {
-            // Hier könntest du auf Nachrichten von der Parent-App reagieren
-            console.log('Nachricht erhalten:', event.data);
-        });
-    </script>
+    function tryAutoRedirect() {
+        // Since this callback runs on external server,
+        // automatic redirect to localhost won't work.
+        // User should copy the code manually or use the "manual input" button in the app.
+        alert('Bitte kopieren Sie den Code und geben Sie ihn in der App ein (Button "Code manuell eingeben")');
+    }
+
+    // Listen for messages from the app (if opened in iframe/popup)
+    window.addEventListener('message', (event) => {
+        if (event.origin === 'http://localhost:1420' || event.origin === 'tauri://localhost') {
+            if (code) {
+                event.source.postMessage({
+                    type: 'spotify_auth_code',
+                    code: code,
+                    state: state
+                }, event.origin);
+            }
+        }
+    });
+</script>
 </body>
 </html>
